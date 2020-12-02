@@ -1,19 +1,25 @@
 package com.team.olpokhorochdemo.view.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
-import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 import com.team.olpokhorochdemo.R;
+import com.team.olpokhorochdemo.databinding.ActivityMainBinding;
 import com.team.olpokhorochdemo.model.Person;
+import com.team.olpokhorochdemo.view.adapter.PersonAdapter;
+import com.team.olpokhorochdemo.viewmodel.MainActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +28,34 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private ArrayList<Person> personArrayList;
+    private MainActivityViewModel mMainActivityViewModel;
+    private ActivityMainBinding binding;
+    private PersonAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         init();
+        mMainActivityViewModel.init();
+        mMainActivityViewModel.getAllPersons().observe(this, new Observer<List<Person>>() {
+            @Override
+            public void onChanged(List<Person> people) {
+                adapter.notifyDataSetChanged();
+            }
+        });
+        initRecyclearView();
+    }
 
-        setContentView(R.layout.activity_main);
-/*        createObject("Amit Kundu",25);
-        createObject("Mostain Ahamed",30);
-        createObject("Abdullah Al Noman",25);
-        createObject("Soumik Kundu",25);*/
-
-        readObject();
-
-
+    private void initRecyclearView() {
+        binding.personRV.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new PersonAdapter(this, mMainActivityViewModel.getAllPersons().getValue());
+        binding.personRV.setAdapter(adapter);
     }
 
     private void init() {
         personArrayList = new ArrayList<>();
+        mMainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
+
     }
 
     public void createObject(String name, int age) {
@@ -63,27 +79,5 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void readObject() {
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Person");
 
-        query.findInBackground(new FindCallback<ParseObject>() {
-
-            @Override
-            public void done(List<ParseObject> postList, ParseException e) {
-                if (e == null) {
-                    // If there are results, update the list of posts
-                    // and notify the adapter
-                    personArrayList.clear();
-                    for (ParseObject person : postList) {
-                        personArrayList.add(new Person(person.getString("name"), person.getString("age")));
-                    }
-                    for (Person post : personArrayList) {
-                        Log.d(TAG, "done: "+post.getName());
-                    }
-                } else {
-                    Log.d(getClass().getSimpleName(), "Error: " + e.getMessage());
-                }
-            }
-        });
-    }
 }

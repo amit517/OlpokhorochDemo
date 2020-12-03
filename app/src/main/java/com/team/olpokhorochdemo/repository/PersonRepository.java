@@ -1,5 +1,6 @@
 package com.team.olpokhorochdemo.repository;
 
+import android.app.Application;
 import android.util.Log;
 
 import androidx.lifecycle.MutableLiveData;
@@ -19,24 +20,18 @@ import java.util.List;
 public class PersonRepository {
 
     private static final String TAG = "PersonRepository";
-    private static PersonRepository instance;
     private ArrayList<Person> personArrayList = new ArrayList<>();
+    private Application application;
 
-    public static PersonRepository getInstance(){
-        if(instance == null){
-            instance = new PersonRepository();
-        }
-        return instance;
+    public PersonRepository(Application application) {
+        this.application = application;
     }
 
     public MutableLiveData<List<Person>> getPersons(){
-        fetchData();
+
         MutableLiveData<List<Person>> data = new MutableLiveData<>();
-        data.setValue(personArrayList);
-        return data;
-    }
-    public void fetchData() {
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Person");
+
         query.findInBackground(new FindCallback<ParseObject>() {
 
             @Override
@@ -46,13 +41,15 @@ public class PersonRepository {
                     // and notify the adapter
                     personArrayList.clear();
                     for (ParseObject person : postList) {
-                        personArrayList.add(new Person(person.getString("name"), person.getString("age")));
+                        personArrayList.add(new Person(person.getString("name"), String.valueOf(person.getInt("age"))));
                     }
+                    data.postValue(personArrayList);
                 } else {
                     Log.d(getClass().getSimpleName(), "Error: " + e.getMessage());
                 }
             }
         });
-    }
 
+        return data;
+    }
 }

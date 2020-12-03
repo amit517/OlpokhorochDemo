@@ -1,5 +1,9 @@
 package com.team.olpokhorochdemo.viewmodel;
 
+import android.app.Application;
+
+import androidx.annotation.NonNull;
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -12,21 +16,17 @@ import java.util.List;
 /**
  * Created by Amit on 03,December,2020
  */
-public class MainActivityViewModel extends ViewModel {
+public class MainActivityViewModel extends AndroidViewModel {
 
     private MutableLiveData<List<Person>> mPersonList;
     private PersonRepository mRepo;
 
-    public void init(){
-        if (mPersonList !=null){
-            return;
-        }
-        mRepo = PersonRepository.getInstance();
-        mPersonList = mRepo.getPersons();
+    public MainActivityViewModel (@NonNull Application application){
+        super(application);
+        mRepo = new PersonRepository(application);
     }
 
-    public LiveData<List<Person>> getAllPersons(){
-        return mPersonList;
+    public MutableLiveData<List<Person>> getAllPersons(){
+        return mRepo.getPersons();
     }
-
 }

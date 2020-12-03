@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
         mMainActivityViewModel.getAllPersons().observe(this, new Observer<List<Person>>() {
             @Override
             public void onChanged(List<Person> people) {
+                personArrayList.clear();
+                personArrayList.addAll(people);
                 adapter.setPersonList(people);
                 Log.d(TAG, "onChanged: "+people.size());
             }
@@ -67,7 +69,7 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
 
     private void initRecyclearView() {
         binding.personRV.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PersonAdapter( personArrayList,this,this);
+        adapter = new PersonAdapter(this,this);
         binding.personRV.setAdapter(adapter);
     }
 

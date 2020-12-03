@@ -8,7 +8,10 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
+import com.parse.GetCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -45,7 +48,7 @@ public class PersonRepository {
                 if (e == null) {
                     personArrayList.clear();
                     for (ParseObject person : postList) {
-                        personArrayList.add(new Person(person.getString("name"), person.getInt("age")));
+                        personArrayList.add(new Person(person.getString("name"), person.getInt("age"),person.getObjectId()));
                     }
                     data.postValue(personArrayList);
                 } else {
@@ -71,13 +74,42 @@ public class PersonRepository {
             @Override
             public void done(ParseException e) {
                 // Here you can handle errors, if thrown. Otherwise, "e" should be null
+                mIsUpdating.postValue(false);
                 if (e == null) {
-                    mIsUpdating.postValue(false);
                     liveData.postValue("200");
                 } else {
-                    mIsUpdating.postValue(false);
                     liveData.postValue("500");
-                    Toast.makeText(application, "Something went wrong", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        return liveData;
+    }
+
+    public MutableLiveData<String> deleteObject(String  objectId){
+        mIsUpdating.setValue(true);
+        final MutableLiveData<String> liveData = new MutableLiveData<>();
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Person");
+        query.getInBackground(objectId, new GetCallback<ParseObject>() {
+            public void done(ParseObject object, ParseException e) {
+                if (e == null) {
+                    Log.d(TAG, "done: "+object.getObjectId());
+                    object.deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            mIsUpdating.postValue(false);
+                            if (e == null){
+                                liveData.postValue("200");
+                            }
+                            else {
+                                liveData.postValue("500");
+                            }
+                        }
+                    });
+
+                } else {
+                    Log.d(TAG, "done: "+"problem");
                 }
             }
         });

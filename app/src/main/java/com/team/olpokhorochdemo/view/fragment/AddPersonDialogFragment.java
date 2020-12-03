@@ -23,10 +23,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.team.olpokhorochdemo.R;
 import com.team.olpokhorochdemo.model.Person;
 import com.team.olpokhorochdemo.viewmodel.MainActivityViewModel;
 
+import java.util.Objects;
 
 public class AddPersonDialogFragment extends BottomSheetDialogFragment implements  View.OnClickListener {
 
@@ -117,7 +119,6 @@ public class AddPersonDialogFragment extends BottomSheetDialogFragment implement
         mMainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
     }
 
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -131,12 +132,15 @@ public class AddPersonDialogFragment extends BottomSheetDialogFragment implement
         mListener = null;
     }
 
-
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.addBtn:
-                addPerson(new Person(nameET.getText().toString(),Integer.parseInt(ageET.getText().toString())));
+                if (!ageET.getText().toString().isEmpty() && !nameET.getText().toString().isEmpty()){
+                    addPerson(new Person(nameET.getText().toString(),Integer.parseInt(ageET.getText().toString())));
+                }else {
+                    Toast.makeText(context, "All fields are required", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.cancelBtn:
                 dismiss();
@@ -149,9 +153,13 @@ public class AddPersonDialogFragment extends BottomSheetDialogFragment implement
             @Override
             public void onChanged(String responseCode) {
                 if (responseCode.equals("200")){
-                    Toast.makeText(context, "Successfully added", Toast.LENGTH_SHORT).show();
+                    Snackbar.make(Objects.requireNonNull(getView()), "Successfully deleted", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                     mListener.successfullyAdded();
                     dismiss();
+                }else {
+                    Snackbar.make(Objects.requireNonNull(getView()), "Something went wrong", Snackbar.LENGTH_LONG)
+                            .setAction("Action", null).show();
                 }
             }
         });

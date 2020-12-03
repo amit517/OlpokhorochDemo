@@ -32,7 +32,12 @@ public class MainActivityViewModel extends AndroidViewModel {
         return mRepo.addPerson(person);
     }
 
+    public MutableLiveData<String> deletePerson(String  objectId){
+        return mRepo.deleteObject(objectId);
+    }
+
     public LiveData<Boolean> getIsUpdating(){
         return mRepo.getIsUpdating();
     }
+
 }

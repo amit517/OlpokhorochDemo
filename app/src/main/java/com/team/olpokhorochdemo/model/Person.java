@@ -6,10 +6,25 @@ package com.team.olpokhorochdemo.model;
 public class Person {
     private String name;
     private int age;
+    private String objectId;
 
     public Person(String name, int age) {
         this.name = name;
         this.age = age;
+    }
+
+    public Person(String name, int age, String objectId) {
+        this.name = name;
+        this.age = age;
+        this.objectId = objectId;
+    }
+
+    public String getObjectId() {
+        return objectId;
+    }
+
+    public void setObjectId(String objectId) {
+        this.objectId = objectId;
     }
 
     public String getName() {

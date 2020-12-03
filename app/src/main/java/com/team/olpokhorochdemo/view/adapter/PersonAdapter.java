@@ -88,4 +88,9 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     public interface RvLongClickListener {
         void position(int position);
     }
+
+    public void clear(int position) {
+        personList.remove(position);
+        notifyItemRemoved(position);
+    }
 }

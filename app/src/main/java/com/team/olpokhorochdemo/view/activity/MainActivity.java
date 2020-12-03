@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
@@ -22,12 +24,13 @@ import com.team.olpokhorochdemo.R;
 import com.team.olpokhorochdemo.databinding.ActivityMainBinding;
 import com.team.olpokhorochdemo.model.Person;
 import com.team.olpokhorochdemo.view.adapter.PersonAdapter;
+import com.team.olpokhorochdemo.view.fragment.AddPersonDialogFragment;
 import com.team.olpokhorochdemo.viewmodel.MainActivityViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AddPersonDialogFragment.ItemClickListene {
 
     private static final String TAG = "MainActivity";
     private ArrayList<Person> personArrayList;
@@ -49,6 +52,15 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onChanged: "+people.size());
             }
         });
+
+        binding.floatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AddPersonDialogFragment addPhotoBottomDialogFragment = new AddPersonDialogFragment();
+                addPhotoBottomDialogFragment.show(getSupportFragmentManager(),
+                        AddPersonDialogFragment.TAG);
+            }
+        });
     }
 
     private void initRecyclearView() {
@@ -62,26 +74,9 @@ public class MainActivity extends AppCompatActivity {
         mMainActivityViewModel = new ViewModelProvider(this).get(MainActivityViewModel.class);
     }
 
-    public void createObject(String name, int age) {
-        ParseObject entity = new ParseObject("Person");
-
-        entity.put("name", name);
-        entity.put("age", age);
-
-        // Saves the new object.
-        // Notice that the SaveCallback is totally optional!
-        entity.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                // Here you can handle errors, if thrown. Otherwise, "e" should be null
-                if (e == null) {
-                    Log.d(TAG, "done: " + "added");
-                } else {
-                    Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+    @Override
+    public void successfullyAdded() {
+        finish();
+        startActivity(getIntent());
     }
-
-
 }

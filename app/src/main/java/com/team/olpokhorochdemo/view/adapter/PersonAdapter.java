@@ -38,7 +38,7 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.nameTV.setText(personList.get(position).getName());
-        holder.ageTV.setText(personList.get(position).getAge());
+        holder.ageTV.setText(String.valueOf(personList.get(position).getAge()));
     }
 
     @Override

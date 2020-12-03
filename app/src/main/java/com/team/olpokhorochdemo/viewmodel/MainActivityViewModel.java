@@ -17,8 +17,6 @@ import java.util.List;
  * Created by Amit on 03,December,2020
  */
 public class MainActivityViewModel extends AndroidViewModel {
-
-    private MutableLiveData<List<Person>> mPersonList;
     private PersonRepository mRepo;
 
     public MainActivityViewModel (@NonNull Application application){
@@ -28,5 +26,13 @@ public class MainActivityViewModel extends AndroidViewModel {
 
     public MutableLiveData<List<Person>> getAllPersons(){
         return mRepo.getPersons();
+    }
+
+    public MutableLiveData<String> addPerson(Person person){
+        return mRepo.addPerson(person);
+    }
+
+    public LiveData<Boolean> getIsUpdating(){
+        return mRepo.getIsUpdating();
     }
 }

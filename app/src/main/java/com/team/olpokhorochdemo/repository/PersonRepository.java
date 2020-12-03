@@ -43,8 +43,6 @@ public class PersonRepository {
             @Override
             public void done(List<ParseObject> postList, ParseException e) {
                 if (e == null) {
-                    // If there are results, update the list of posts
-                    // and notify the adapter
                     personArrayList.clear();
                     for (ParseObject person : postList) {
                         personArrayList.add(new Person(person.getString("name"), person.getInt("age")));
@@ -90,25 +88,4 @@ public class PersonRepository {
     public LiveData<Boolean> getIsUpdating(){
         return mIsUpdating;
     }
-
-    /*public void createObject(String name, int age) {
-        ParseObject entity = new ParseObject("Person");
-
-        entity.put("name", name);
-        entity.put("age", age);
-
-        // Saves the new object.
-        // Notice that the SaveCallback is totally optional!
-        entity.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                // Here you can handle errors, if thrown. Otherwise, "e" should be null
-                if (e == null) {
-                    Log.d(TAG, "done: " + "added");
-                } else {
-                    Toast.makeText(MainActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }*/
 }

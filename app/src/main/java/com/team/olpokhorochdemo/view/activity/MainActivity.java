@@ -1,5 +1,6 @@
 package com.team.olpokhorochdemo.view.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import androidx.databinding.DataBindingUtil;
@@ -8,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -30,7 +32,7 @@ import com.team.olpokhorochdemo.viewmodel.MainActivityViewModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements AddPersonDialogFragment.ItemClickListene {
+public class MainActivity extends AppCompatActivity implements AddPersonDialogFragment.ItemClickListene, PersonAdapter.RvLongClickListener {
 
     private static final String TAG = "MainActivity";
     private ArrayList<Person> personArrayList;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
 
     private void initRecyclearView() {
         binding.personRV.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new PersonAdapter(this, personArrayList);
+        adapter = new PersonAdapter( personArrayList,this,this);
         binding.personRV.setAdapter(adapter);
     }
 
@@ -78,5 +80,26 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
     public void successfullyAdded() {
         finish();
         startActivity(getIntent());
+    }
+
+    @Override
+    public void position(int position) {
+        new AlertDialog.Builder(this)
+                .setTitle("Delete")
+                .setMessage("You are about to delete "+personArrayList.get(position).getName()+".\nAre you sure you want to delete?")
+                .setIcon(R.drawable.ic_baseline_delete_forever_24)
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .show();
     }
 }

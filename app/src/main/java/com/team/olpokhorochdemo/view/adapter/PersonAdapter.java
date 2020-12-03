@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.team.olpokhorochdemo.R;
 import com.team.olpokhorochdemo.model.Person;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,10 +24,12 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     private List<Person> personList;
     private Context mContext;
+    private final RvLongClickListener listener;
 
-    public PersonAdapter(Context context, List<Person> personList) {
+    public PersonAdapter(List<Person> personList, Context mContext, RvLongClickListener listener) {
         this.personList = personList;
-        mContext = context;
+        this.mContext = mContext;
+        this.listener = listener;
     }
 
     @NonNull
@@ -37,8 +41,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.nameTV.setText(personList.get(position).getName());
-        holder.ageTV.setText(String.valueOf(personList.get(position).getAge()));
+        holder.nameTV.setText("Name : "+personList.get(position).getName());
+        holder.ageTV.setText("Age : "+String.valueOf(personList.get(position).getAge()));
     }
 
     @Override
@@ -46,13 +50,31 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         return personList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener {
         TextView nameTV, ageTV;
-
+        private WeakReference<RvLongClickListener> listenerRef;
+        private LinearLayout linearLayout;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             nameTV = itemView.findViewById(R.id.nameTV);
             ageTV = itemView.findViewById(R.id.ageTV);
+            linearLayout = itemView.findViewById(R.id.linearLayout);
+            listenerRef = new WeakReference<>(listener);
+            nameTV.setOnLongClickListener(this);
+            ageTV.setOnLongClickListener(this);
+            linearLayout.setOnLongClickListener(this);
+
+
+        }
+
+        @Override
+        public boolean onLongClick(View view) {
+
+            if (view.getId() == R.id.nameTV || view.getId() == R.id.ageTV || view.getId() == R.id.linearLayout){
+                listenerRef.get().position(getAdapterPosition());
+            }
+
+            return false;
         }
     }
 
@@ -60,5 +82,8 @@ public class PersonAdapter extends RecyclerView.Adapter<PersonAdapter.ViewHolder
         personList.clear();
         personList.addAll(mPersonList);
         notifyDataSetChanged();
+    }
+    public interface RvLongClickListener {
+        void position(int position);
     }
 }

@@ -42,13 +42,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:ems="10"
 
+        android:ems="10"
         android:hint="@string/name"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="@+id/guideline4"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/cardView3" />
 
     <EditText
         android:id="@+id/ageET"
@@ -75,7 +75,7 @@
         app:layout_constraintStart_toStartOf="@+id/guideline5"
         app:layout_constraintTop_toBottomOf="@+id/ageET"
         app:layout_constraintVertical_bias="0.0"
-        android:backgroundTint="@color/design_default_color_primary_variant"
+        android:backgroundTint="@color/purple_700"
         />
 
     <Button
@@ -88,8 +88,19 @@
         app:layout_constraintEnd_toStartOf="@+id/guideline5"
         app:layout_constraintStart_toStartOf="@+id/guideline3"
         app:layout_constraintTop_toTopOf="@+id/addBtn"
-        android:textColor="@color/design_default_color_primary_variant"
+        android:textColor="@color/purple_700"
         />
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardView3"
+        android:layout_width="50dp"
+        android:layout_height="4dp"
+        android:layout_marginTop="8dp"
+        android:backgroundTint="#d6e0e1"
+        app:cardCornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="0dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

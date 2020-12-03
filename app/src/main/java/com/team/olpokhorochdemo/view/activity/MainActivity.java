@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
         mMainActivityViewModel.getAllPersons().observe(this, new Observer<List<Person>>() {
             @Override
             public void onChanged(List<Person> people) {
+                if (people.size()>0){
+                    binding.shimmerFrameLayout.stopShimmer();
+                    binding.relativeLayout.setVisibility(View.GONE);
+                    binding.personRV.setVisibility(View.VISIBLE);
+                    binding.floatingActionButton.setVisibility(View.VISIBLE);
+                }
                 personArrayList.clear();
                 personArrayList.addAll(people);
                 adapter.setPersonList(people);
@@ -144,54 +150,15 @@ public class MainActivity extends AppCompatActivity implements AddPersonDialogFr
                 .show();
     }
 
-    /*private void deleteItem(final String objectId, final int position) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-        dialog.setTitle("Delete")
-                .setMessage(getString(R.string.delete_post_message))
-                .setPositiveButton(getString(R.string.positive_button), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
+    @Override
+    public void onResume() {
+        super.onResume();
+        binding.shimmerFrameLayout.startShimmer();
+    }
 
-                        query = ParseQuery.getQuery("Imagem");
-                        query.whereEqualTo("objectId", objectId);
-                        query.findInBackground(new FindCallback<ParseObject>() {
-                            @Override
-                            public void done(List<ParseObject> objects, ParseException e) {
-                                if (e == null) {
-                                    if (objects.size() > 0) {
-                                        objects.get(position).deleteInBackground(new DeleteCallback() {
-                                            @Override
-                                            public void done(ParseException e) {
-                                                if (e == null) {
-                                                    progress.endProgress(getContext());
-                                                    adapter.notifyDataSetChanged();
-                                                    Toast.makeText(getContext(),getString(R.string.deleted_item),Toast.LENGTH_SHORT).show();
-                                                    Snackbar.make(parentLayout, getString(R.string.deleted_item), Snackbar.LENGTH_LONG)
-                                                            .setAction("Action", null).show();
-                                                    adapter.clear();
-                                                    getPostsToDelete();
-                                                } else {
-                                                    Snackbar.make(parentLayout, getString(R.string.error_to_delete), Snackbar.LENGTH_LONG)
-                                                            .setAction("Action", null).show();
-                                                    progress.endProgress(getContext());
-                                                }
-                                            }
-                                        });
-                                    }
-                                } else {
-                                    Snackbar.make(parentLayout, getString(R.string.error_to_delete), Snackbar.LENGTH_LONG)
-                                            .setAction("Action", null).show();
-                                    progress.endProgress(getContext());
-                                }
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton(getString(R.string.negative_button), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                }).show();
-    }*/
+    @Override
+    public void onPause() {
+        super.onPause();
+        binding.shimmerFrameLayout.stopShimmer();
+    }
 }

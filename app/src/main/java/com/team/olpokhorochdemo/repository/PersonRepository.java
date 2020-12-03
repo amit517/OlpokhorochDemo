@@ -109,7 +109,7 @@ public class PersonRepository {
                     });
 
                 } else {
-                    Log.d(TAG, "done: "+"problem");
+                    liveData.postValue("500");
                 }
             }
         });
